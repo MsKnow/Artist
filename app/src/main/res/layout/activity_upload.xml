@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/view_toolbar"/>
+
+    <Button
+        android:id="@+id/bt_img_take"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择图片相机"/>
+
+    <Button
+        android:id="@+id/bt_img_pick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择图片相册"/>
+
+    <ImageView
+        android:id="@+id/im_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/bt_img_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="upload"/>
+
+</LinearLayout>
