@@ -13,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -59,6 +61,14 @@ public class MainActivity extends ToolbarActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+
+        //Glide.with(this).load("http://sinacloud.net/artist/selfie/9.png").into(imagePost);
+
+        super.onResume();
     }
 
     @Override
