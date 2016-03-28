@@ -1,6 +1,11 @@
 package com.example.know.retrofit;
 
+import com.example.know.util.OkHttpUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -11,9 +16,16 @@ public class ServiceFactory {
     private static ArtService service = null;
 
     public static  ArtService getService(){
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://1.selfie.applinzi.com/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(OkHttpUtil.client)
                 .build();
         service = retrofit.create(ArtService.class);
         return service;

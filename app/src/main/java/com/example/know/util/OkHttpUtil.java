@@ -13,11 +13,12 @@ import okhttp3.Response;
  */
 public class OkHttpUtil {
 
-    private static OkHttpClient clientt = new OkHttpClient();
-    private static final OkHttpClient client = clientt.newBuilder()
-            .readTimeout(10, TimeUnit.SECONDS).build();
-    static {// TODO: 2016/2/20 设置超时
-        //client.connectTimeoutMillis();
+    //private static OkHttpClient clientt = new OkHttpClient();
+    public static final OkHttpClient client = new OkHttpClient.Builder()  //clientt.newBuilder()
+            //.readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS).build();
+    static {
+
     }
 
     /**

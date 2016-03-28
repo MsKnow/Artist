@@ -7,6 +7,16 @@ public class ArtCard extends Card {
 
     private int flower;
 
+    public int getSelfId() {
+        return selfId;
+    }
+
+    public void setSelfId(int selfId) {
+        this.selfId = selfId;
+    }
+
+    private int selfId;
+
     public int getFlower() {
         return flower;
     }
@@ -20,6 +30,7 @@ public class ArtCard extends Card {
 
         return super.toString()+"ArtCard{" +
                 "flower=" + flower +
+                "selfId" + selfId +
                 '}';
     }
 }
