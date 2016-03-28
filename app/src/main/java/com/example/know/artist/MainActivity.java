@@ -160,8 +160,6 @@ public class MainActivity extends ToolbarActivity {
         if (id == R.id.action_settings) {
 
 
-
-            //File file = new File(cacheDir+url_im_zjicm.replace("/","杠"));
             new Thread(new Runnable() {
                 @Override
                 public void run() {
