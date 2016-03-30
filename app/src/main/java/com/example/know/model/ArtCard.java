@@ -29,8 +29,8 @@ public class ArtCard extends Card {
     public String toString() {
 
         return super.toString()+"ArtCard{" +
-                "flower=" + flower +
-                "selfId" + selfId +
+                " flower=" + flower +
+                " selfId" + selfId +
                 '}';
     }
 }

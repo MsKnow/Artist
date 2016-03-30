@@ -25,7 +25,7 @@ public interface ArtService {
     @POST("saver.php")
     //Call<ResponseBody> postImage(@Part(value = "file", encoding = "8-bit")RequestBody image);
     Call<ResponseBody> postImage(@Part("file\"; filename=\"文件名.jpg")RequestBody image,
-                                 @Part("userId") int userId );
+                                 @Part("userId") int userId ,@Part("selfId") int selfId);
     //Call<ResponseBody> postImage(@Part("file\";")RequestBody image);
     //Observable<TwoCard> getImooc(int num);
 

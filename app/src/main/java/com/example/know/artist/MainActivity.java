@@ -123,7 +123,10 @@ public class MainActivity extends ToolbarActivity {
 
                         adapter.setOClickListener(getOnCardClickListener());
 
-                        Log.e("getwo", twoCards.get(1).toString());
+                        for(int i = 0;i<twoCards.size();i++){
+                            Log.e("getwo", twoCards.get(i).toString());
+                        }
+
 
                     }
                 });

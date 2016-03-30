@@ -50,6 +50,9 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
 
     File outputImage;
 
+    int userId = 233;
+    int selfId ;
+
     @Override
     protected int getContentId() {
         return R.layout.activity_upload;
@@ -59,6 +62,9 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        selfId = intent.getIntExtra("selfId",-1);
 
         buttonImgTake.setOnClickListener(this);
         buttonImgPick.setOnClickListener(this);
@@ -126,7 +132,7 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
 
                 RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"),outputImage);
 
-                Call<ResponseBody> call = ServiceFactory.getService().postImage(requestBody,233);
+                Call<ResponseBody> call = ServiceFactory.getService().postImage(requestBody,userId,selfId);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

@@ -8,11 +8,20 @@ import java.util.List;
 public class TwoCard {
 
     public SelfieCard selfie;
-    List<ArtCard> arts;
+    public List<ArtCard> arts;
     //ArtCard artCard;
 
     @Override
     public String toString() {
-        return selfie.toString()+" "+arts.size();
+        if(arts != null){
+            String str = "";
+            for (int i=0;i<arts.size();i++){
+                str += "\n"+arts.get(i).toString();
+            }
+            return selfie.toString()+" "+str;
+        }else{
+            return selfie.toString()+" art is null";
+        }
+
     }
 }
