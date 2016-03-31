@@ -19,6 +19,7 @@ import com.example.know.adapter.TwoCardAdapter;
 import com.example.know.model.SelfieCard;
 import com.example.know.model.TwoCard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,10 +83,10 @@ public class MainActivity extends ToolbarActivity {
 
     private void intiList(){
 
-        SelfieCard selfieCard = new SelfieCard();
+        /*SelfieCard selfieCard = new SelfieCard();
         selfieCard.setImUrl("http://sinacloud.net/artist/selfie/s2.png");
         TwoCard twoCard = new TwoCard();
-        twoCard.setSelfie(selfieCard);
+        twoCard.setSelfie(selfieCard);*/
         twoCards = new ArrayList<>();
         adapter = new TwoCardAdapter(twoCards, MainActivity.this);
         LinearLayoutManager llm = new LinearLayoutManager(MainActivity.this, 1, false);
@@ -119,6 +120,7 @@ public class MainActivity extends ToolbarActivity {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         Log.e("getwo", "onError");
+                        swipeRL.setRefreshing(false);
                     }
 
                     @Override
@@ -148,11 +150,12 @@ public class MainActivity extends ToolbarActivity {
                 Log.e("selfClick"," id: "+id);
             }
             if(v == artCard){
-                Log.e("artClick"," id: "+id);
-                Intent intent = new Intent(MainActivity.this,UploadActivity.class);
-                intent.putExtra("selfId",id);
-                startActivity(intent);
+                Log.e("artClick", " id: " + id);
             }
+            Intent intent = new Intent(MainActivity.this,CardinActivity.class);
+            //intent.putExtra("selfId",(Serializable)twoCard.arts); 使用数据库做第一次更新
+            intent.putExtra("selfId",id);
+            startActivity(intent);
         };
     }
 
