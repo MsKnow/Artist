@@ -54,7 +54,7 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
 
         holder.tv_zan.setText(card.selfie.getUserId() + "");
 
-        holder.tv_uptime.setText(card.selfie.getUploadTime().toString());
+        //holder.tv_uptime.setText(card.selfie.getUploadTime().toString()+"");
 
         Glide.with(context)
                 .load(card.selfie.getImUrl())
@@ -62,7 +62,7 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
                 .into(holder.im_selfie);
         if(card.arts!=null){
             Glide.with(context)
-                    .load(card.arts.get(0).getImUrl())
+                    .load(card.arts.get(card.arts.size()-1).getImUrl())
                     .centerCrop()
                     .into(holder.im_art);
         }

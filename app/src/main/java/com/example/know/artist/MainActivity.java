@@ -1,12 +1,11 @@
 package com.example.know.artist;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,26 +13,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.example.know.adapter.OnCardClickListener;
 import com.example.know.adapter.TwoCardAdapter;
+import com.example.know.model.SelfieCard;
 import com.example.know.model.TwoCard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -43,10 +34,13 @@ public class MainActivity extends ToolbarActivity {
 
     //@Bind(R.id.im_post)ImageView imagePost;
     @Bind(R.id.list_card)RecyclerView cardList;
+    @Bind(R.id.swipe)SwipeRefreshLayout swipeRL ;
+    @Bind(R.id.fab)FloatingActionButton fab;
     //String accessKey = "zb7ci73kAL8ZNoy5Yd9Q";
     //String secretKey = "f618bb0da5d82c7dd43502c0f9347f1383cfd235";
 
-    TwoCardAdapter adapter = null;
+    List<TwoCard> twoCards;
+    TwoCardAdapter adapter;
 
     @Override
     protected int getContentId() {
@@ -57,13 +51,17 @@ public class MainActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //adapter = new TwoCardAdapter(null,this);
-
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        intiList();
+
+        swipeRL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getcards();
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +69,7 @@ public class MainActivity extends ToolbarActivity {
                         .setAction("Action", null).show();
 
                 Intent intent = new Intent(MainActivity.this, UploadActivity.class);
+                intent.putExtra("selfId",-1);//just selfie
                 startActivity(intent);
 
             }
@@ -79,6 +78,20 @@ public class MainActivity extends ToolbarActivity {
         Log.e("oncreate", "oncreate");
 
         //getcards();
+    }
+
+    private void intiList(){
+
+        SelfieCard selfieCard = new SelfieCard();
+        selfieCard.setImUrl("http://sinacloud.net/artist/selfie/s2.png");
+        TwoCard twoCard = new TwoCard();
+        twoCard.setSelfie(selfieCard);
+        twoCards = new ArrayList<>();
+        adapter = new TwoCardAdapter(twoCards, MainActivity.this);
+        LinearLayoutManager llm = new LinearLayoutManager(MainActivity.this, 1, false);
+        cardList.setLayoutManager(llm);
+        adapter.setOClickListener(getOnCardClickListener());
+        cardList.setAdapter(adapter);
     }
 
     @Override
@@ -100,8 +113,8 @@ public class MainActivity extends ToolbarActivity {
                     @Override
                     public void onCompleted() {
                         Log.e("getwo", "onCompleted");
+                        swipeRL.setRefreshing(false);
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
@@ -109,24 +122,18 @@ public class MainActivity extends ToolbarActivity {
                     }
 
                     @Override
-                    public void onNext(List<TwoCard> twoCards) {
-
-                        LinearLayoutManager llm = new LinearLayoutManager(MainActivity.this, 1, false);
-                        cardList.setLayoutManager(llm);
-
-                        adapter = new TwoCardAdapter(twoCards, MainActivity.this);
-
-                        adapter.setOClickListener(getOnCardClickListener());
-
-                        cardList.setAdapter(adapter);
+                    public void onNext(List<TwoCard> twoCs) {
+                        twoCards.clear();
+                        twoCards.addAll(twoCs);
+                        //cardList.setAdapter(adapter);
+                        //adapter.notifyItemInserted(1);
                         adapter.notifyDataSetChanged();
 
-                        adapter.setOClickListener(getOnCardClickListener());
+
 
                         for(int i = 0;i<twoCards.size();i++){
                             Log.e("getwo", twoCards.get(i).toString());
                         }
-
 
                     }
                 });
@@ -136,11 +143,15 @@ public class MainActivity extends ToolbarActivity {
     private OnCardClickListener getOnCardClickListener(){
         return (v,selfCard,artCard,twoCard)->{
             if(twoCard == null) return;
+            int id = twoCard.selfie.getId();
             if(v == selfCard){
-                Log.e("selfClick"," id: "+twoCard.selfie.getId());
+                Log.e("selfClick"," id: "+id);
             }
             if(v == artCard){
-                Log.e("artClick"," id: "+twoCard.selfie.getId());
+                Log.e("artClick"," id: "+id);
+                Intent intent = new Intent(MainActivity.this,UploadActivity.class);
+                intent.putExtra("selfId",id);
+                startActivity(intent);
             }
         };
     }
@@ -169,7 +180,6 @@ public class MainActivity extends ToolbarActivity {
 
                 }
             }).start();
-
 
             return true;
         }

@@ -11,6 +11,10 @@ public class TwoCard {
     public List<ArtCard> arts;
     //ArtCard artCard;
 
+    public void setSelfie(SelfieCard selfie) {
+        this.selfie = selfie;
+    }
+
     @Override
     public String toString() {
         if(arts != null){
