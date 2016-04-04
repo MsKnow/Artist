@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.example.know.adapter.OnCardClickListener;
 import com.example.know.adapter.TwoCardAdapter;
+import com.example.know.artist.view.CardinView;
 import com.example.know.model.SelfieCard;
 import com.example.know.model.TwoCard;
 
@@ -31,7 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-public class MainActivity extends ToolbarActivity {
+public class MainActivity extends ToolbarActivity{
 
     //@Bind(R.id.im_post)ImageView imagePost;
     @Bind(R.id.list_card)RecyclerView cardList;
@@ -97,9 +98,7 @@ public class MainActivity extends ToolbarActivity {
 
     @Override
     protected void onResume() {
-
         //Glide.with(this).load("http://imgx.sinacloud.net/artist/r_max,e_oil_paint/selfie/1.jpg").into(imagePost);
-
         getcards();
 
         super.onResume();
@@ -130,8 +129,6 @@ public class MainActivity extends ToolbarActivity {
                         //cardList.setAdapter(adapter);
                         //adapter.notifyItemInserted(1);
                         adapter.notifyDataSetChanged();
-
-
 
                         for(int i = 0;i<twoCards.size();i++){
                             Log.e("getwo", twoCards.get(i).toString());
@@ -189,4 +186,5 @@ public class MainActivity extends ToolbarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

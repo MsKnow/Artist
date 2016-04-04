@@ -1,5 +1,6 @@
 package com.example.know.retrofit;
 
+import com.example.know.model.ArtCard;
 import com.example.know.model.TwoCard;
 
 
@@ -31,5 +32,8 @@ public interface ArtService {
 
     @GET("geTwoCard.php")
     Observable<List<TwoCard>> getTwoCard(@Query("userId")int userId);
+
+    @GET("geTwoCard.php")
+    Observable<List<ArtCard>> getArts(@Query("userId")int userId,@Query(("selfId")) int selfId);
 
 }
