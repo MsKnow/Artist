@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.know.adapter.ArtsAdapter;
 import com.example.know.artist.view.CardinView;
@@ -24,6 +26,8 @@ import rx.schedulers.Schedulers;
 public class CardinActivity extends ToolbarActivity implements CardinView{
 
     private CardinPresenterImpl presenter;
+
+    int selfId;
 
     private List<ArtCard> arts;
     private ArtsAdapter artsAdapter;
@@ -55,12 +59,26 @@ public class CardinActivity extends ToolbarActivity implements CardinView{
         initList();
 
         Intent intentF = getIntent();
-        int selfId = intentF.getIntExtra("selfId",0);
+        selfId = intentF.getIntExtra("selfId",0);
         presenter.getArts(selfId);
 
-        /*Intent intent = new Intent(CardinActivity.this,UploadActivity.class);
-        intent.putExtra("selfId", id);
-        startActivity(intent);*/
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_cardin,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Intent intent = new Intent(CardinActivity.this,UploadActivity.class);
+        intent.putExtra("selfId", selfId);
+        startActivity(intent);
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
