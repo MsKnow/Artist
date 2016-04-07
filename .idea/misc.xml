@@ -90,6 +90,9 @@
   <component name="ProjectType">
     <option name="id" value="Android" />
   </component>
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\know\AppData\Roaming\Subversion</configuration>
+  </component>
   <component name="masterDetails">
     <states>
       <state key="ScopeChooserConfigurable.UI">

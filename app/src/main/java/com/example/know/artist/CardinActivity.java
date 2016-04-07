@@ -1,7 +1,6 @@
 package com.example.know.artist;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -10,6 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.know.adapter.ArtsAdapter;
+import com.example.know.artist.base.RefreshActivity;
+import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.artist.view.CardinView;
 import com.example.know.model.ArtCard;
 import com.example.know.presenter.impl.CardinPresenterImpl;
@@ -19,11 +20,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
-public class CardinActivity extends ToolbarActivity implements CardinView{
+public class CardinActivity extends RefreshActivity implements CardinView{
 
     private CardinPresenterImpl presenter;
 
@@ -47,6 +45,16 @@ public class CardinActivity extends ToolbarActivity implements CardinView{
         artList.setLayoutManager(layoutManager);
 
         artList.setAdapter(artsAdapter);
+    }
+
+    @Override
+    protected int getSwipeId() {
+        return R.id.swipe_cardin;
+    }
+
+    @Override
+    protected void refresh() {
+
     }
 
     @Override
