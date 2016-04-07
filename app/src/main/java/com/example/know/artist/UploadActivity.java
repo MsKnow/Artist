@@ -219,7 +219,7 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
                         Log.e("hehe","he1");
                         try {
                         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputImage));
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bos);
 
                             bos.flush();bos.close();
                         } catch (IOException e) {

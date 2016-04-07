@@ -8,7 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
  */
 public abstract class RefreshActivity extends ToolbarActivity {
 
-    SwipeRefreshLayout swipeRL;
+    protected SwipeRefreshLayout swipeRL;
 
     abstract protected int getSwipeId();
 
@@ -18,7 +18,7 @@ public abstract class RefreshActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        swipeRL = (SwipeRefreshLayout) findViewById(getSwipeId());
 
         swipeRL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

@@ -28,6 +28,7 @@ public class CardinPresenterImpl implements CardinPresenter{
 
     @Override
     public void getArts(int selfId) {
+        cardinView.showLoading();
         artService.getArts(233,selfId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -35,6 +36,7 @@ public class CardinPresenterImpl implements CardinPresenter{
                     @Override
                     public void onCompleted() {
                         Log.e("oncomplete", "ff");
+                        cardinView.hideLoading();
                     }
 
                     @Override

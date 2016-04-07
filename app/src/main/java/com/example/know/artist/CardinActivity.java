@@ -54,7 +54,7 @@ public class CardinActivity extends RefreshActivity implements CardinView{
 
     @Override
     protected void refresh() {
-
+        presenter.getArts(selfId);
     }
 
     @Override
@@ -91,12 +91,12 @@ public class CardinActivity extends RefreshActivity implements CardinView{
 
     @Override
     public void showLoading() {
-
+        swipeRL.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-
+        swipeRL.setRefreshing(false);
     }
 
     @Override

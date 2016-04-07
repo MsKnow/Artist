@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.example.know.adapter.OnCardClickListener;
 import com.example.know.adapter.TwoCardAdapter;
+import com.example.know.artist.base.RefreshActivity;
 import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.model.TwoCard;
 
@@ -28,15 +29,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-public class MainActivity extends ToolbarActivity {
+public class MainActivity extends RefreshActivity {
 
     //@Bind(R.id.im_post)ImageView imagePost;
     @Bind(R.id.list_card)RecyclerView cardList;
-    @Bind(R.id.swipe)SwipeRefreshLayout swipeRL ;
     @Bind(R.id.fab)FloatingActionButton fab;
     //String accessKey = "zb7ci73kAL8ZNoy5Yd9Q";
     //String secretKey = "f618bb0da5d82c7dd43502c0f9347f1383cfd235";
-
     List<TwoCard> twoCards;
     TwoCardAdapter adapter;
 
@@ -46,19 +45,22 @@ public class MainActivity extends ToolbarActivity {
     }
 
     @Override
+    protected int getSwipeId() {
+        return R.id.swipe;
+    }
+
+    @Override
+    protected void refresh() {
+        getcards();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
 
         intiList();
-
-        swipeRL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getcards();
-            }
-        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
