@@ -48,11 +48,6 @@ public class CardinActivity extends RefreshActivity implements CardinView{
     }
 
     @Override
-    protected int getSwipeId() {
-        return R.id.swipe_cardin;
-    }
-
-    @Override
     protected void refresh() {
         presenter.getArts(selfId);
     }

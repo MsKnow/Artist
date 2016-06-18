@@ -36,4 +36,8 @@ public interface ArtService {
     @GET("geTwoCard.php")
     Observable<List<ArtCard>> getArts(@Query("userId")int userId,@Query(("selfId")) int selfId);
 
+    @Multipart
+    @POST("register.php")
+    Observable<Result> Register(@Part("name")String name,@Part("password")String password);
+
 }
