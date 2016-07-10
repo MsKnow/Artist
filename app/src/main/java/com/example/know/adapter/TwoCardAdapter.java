@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.know.artist.R;
 import com.example.know.model.TwoCard;
+import com.example.know.util.DateUtil;
 
 import java.util.List;
 
@@ -53,7 +54,8 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
         holder.twoCard = card;
 
         holder.tv_zan.setText(card.selfie.getUserId() + "");
-
+        String selfTime = DateUtil.toDate(card.selfie.getUploadTime());
+        holder.tv_uptime.setText(selfTime);
         //holder.tv_uptime.setText(card.selfie.getUploadTime().toString()+"");
 
         Glide.with(context)
@@ -66,7 +68,6 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
                     .centerCrop()
                     .into(holder.im_art);
         }
-
 
     }
 

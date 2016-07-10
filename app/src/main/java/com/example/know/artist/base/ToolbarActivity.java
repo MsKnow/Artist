@@ -15,7 +15,7 @@ public abstract class ToolbarActivity extends AppCompatActivity {
 
     protected Toolbar toolbar;
 
-    public static final ArtService artService = ServiceFactory.getService();
+    public static final ArtService artService = ServiceFactory.getService();//base
 
     abstract protected int getContentId();
 

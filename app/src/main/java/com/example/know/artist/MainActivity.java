@@ -14,12 +14,16 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.know.adapter.OnCardClickListener;
 import com.example.know.adapter.TwoCardAdapter;
 import com.example.know.artist.base.RefreshActivity;
 import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.model.TwoCard;
+import com.example.know.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,7 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends RefreshActivity {
 
+    public static final int REQUSETME = 1;
     //@Bind(R.id.im_post)ImageView imagePost;
     @Bind(R.id.list_card)RecyclerView cardList;
     @Bind(R.id.fab)FloatingActionButton fab;
@@ -43,7 +48,19 @@ public class MainActivity extends RefreshActivity {
     List<TwoCard> twoCards;
     TwoCardAdapter adapter;
     @Bind(R.id.drawerLayout)DrawerLayout drawerLayout;
+    @Bind(R.id.im_avatar)ImageView avatar;
+    @Bind(R.id.tv_user_name)TextView myNameText;
+    @Bind(R.id.tv_user_flower)TextView myFlowers;
     ActionBarDrawerToggle drawerToggle;
+    boolean online = false;
+    User me;
+
+    public void checkLocal(){
+
+    }
+    private void checkOnline(){
+
+    }
 
     @Override
     protected int getContentId() {
@@ -59,26 +76,50 @@ public class MainActivity extends RefreshActivity {
 
         ButterKnife.bind(this);
 
+        List<User> users = App.mDb.query(User.class);
+        if (users.size()>0){
+            me = users.get(0);
+            online = true;
+            refreshMe(me);
+        }
+
         intiList();
         initEvent();
 
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        fab.setOnClickListener(view -> {
+            /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();*/
+            Intent intent = new Intent(MainActivity.this, UploadActivity.class);
+            intent.putExtra("selfId", -1);//just selfie
+            startActivity(intent);
 
-                Intent intent = new Intent(MainActivity.this, UploadActivity.class);
-                intent.putExtra("selfId",-1);//just selfie
-                startActivity(intent);
-
-            }
         });
 
         Log.e("oncreate", "oncreate");
 
         //getcards();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==REQUSETME&&resultCode==RESULT_OK){
+            User mee = (User) data.getSerializableExtra("me");
+            Log.e("requestME",mee.toString());
+
+            me = mee;
+            App.mDb.save(mee);
+            online = true;
+
+            refreshMe(mee);
+        }
+    }
+    private void refreshMe(User me){
+        myNameText.setText(me.getName());
+        Glide.with(MainActivity.this).load(me.getHeadUrl()).into(avatar);
+        Log.e("ava---->",me.getHeadUrl());
+        myFlowers.setText("" + me.getFlower());
     }
 
     private void intiList(){
@@ -104,13 +145,30 @@ public class MainActivity extends RefreshActivity {
         drawerLayout.setDrawerListener(drawerToggle);
 
     }
+    @OnClick(R.id.bt_quit)
+    public void logout(){
+        myNameText.setText("未登录");
+        avatar.setImageResource(R.mipmap.artist);
+        App.mDb.delete(User.class);
+        online = false;
 
+    }
     @OnClick(R.id.im_avatar)
     public void toLogin(){
-        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-        startActivity(intent);
 
-        drawerLayout.closeDrawer(Gravity.LEFT);
+        if (online){
+
+            Intent intent = new Intent(MainActivity.this, UploadActivity.class);
+            intent.putExtra("selfId", 0);//just avatar
+            intent.putExtra("userId",me.getUserId());
+            startActivity(intent);
+
+        }else{
+            drawerLayout.closeDrawer(Gravity.LEFT);
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivityForResult(intent, REQUSETME);
+        }
+
     }
 
     @Override

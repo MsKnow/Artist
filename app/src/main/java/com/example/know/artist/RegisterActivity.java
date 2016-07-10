@@ -62,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setText("注册中。。");
 
         ServiceFactory.getService()
-                .Register(name, password)
+                .Register(name, 1)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -71,14 +71,13 @@ public class RegisterActivity extends AppCompatActivity {
                     registerButton.setText("注册");
 
                     if (result.getResultCode()==1){
-                        Log.e("register","返回数据");
                         Intent intent = new Intent();
                         intent.putExtra(USERNAME, name);
                         setResult(RESULT_OK, intent);
                         finish();
-                        Log.e("register", "返回数据over");
                     }
                     ToastUtil.tShort(result.getResultDes());
+                    Log.e("result",result.toString());
                 }, throwable -> {
 
                     registerButton.setEnabled(true);

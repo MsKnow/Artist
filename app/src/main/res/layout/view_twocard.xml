@@ -38,7 +38,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@drawable/ic_flower_24dp"/>
         <TextView
             android:id="@+id/tv_zan"
             android:layout_width="wrap_content"

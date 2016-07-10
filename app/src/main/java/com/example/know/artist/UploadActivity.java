@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.retrofit.ServiceFactory;
+import com.example.know.util.ToastUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -29,6 +30,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by know on 2016/3/6.
@@ -65,6 +68,7 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         selfId = intent.getIntExtra("selfId",-1);
+        userId = intent.getIntExtra("userId",0);
 
         buttonImgTake.setOnClickListener(this);
         buttonImgPick.setOnClickListener(this);
@@ -124,34 +128,56 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
 
             case R.id.bt_img_upload:
 
-                System.out.println("start post");
+                //System.out.println("start post");
 
                 buttonImgUp.setEnabled(false);
-
+                buttonImgUp.setText("上传中");
                 //File file = new File(imageUri.getPath());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), outputImage);
 
-                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"),outputImage);
+                if (selfId==0){
+                    Log.e("上传",userId+" avatar");
+                    ServiceFactory.getService().postAvatar(requestBody,userId)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(body -> {
 
-                Call<ResponseBody> call = ServiceFactory.getService().postImage(requestBody,userId,selfId);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        try {
-                            Log.e("upload image", response.body().string());
-                            //outputImage.delete();
+                                try {
+                                    String html = body.string();
+                                    Log.e("html", html);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                buttonImgUp.setEnabled(true);
 
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            }, throwable -> {
+                                buttonImgUp.setEnabled(true);
+                                throwable.printStackTrace();
+                            });
+                }else {Log.e("上传",userId+" selfie");
+                    Call<ResponseBody> call = ServiceFactory.getService().postImage(requestBody,userId,selfId);
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
+                                Log.e("upload image", response.body().string());
+                                //outputImage.delete();
+                                buttonImgUp.setEnabled(true);
+                                buttonImgUp.setText("上传");
+                                ToastUtil.tShort("上传成功！！");
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        t.printStackTrace();
-                        buttonImgUp.setEnabled(true);
-                    }
-                });
-
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            t.printStackTrace();
+                            buttonImgUp.setEnabled(true);
+                        }
+                    });
+                }
 
 
                 break;

@@ -36,16 +36,61 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <LinearLayout
+            android:background="@color/md_white_1000"
             android:id="@+id/drawer"
             android:layout_gravity="start"
-            android:layout_width="300dp"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/im_avatar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/icon"/>
+            android:layout_width="220dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:background="@color/colorPrimary">
+                <com.example.know.myview.CircleImageView
+                    android:id="@+id/im_avatar"
+                    android:layout_width="105dp"
+                    android:layout_height="105dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="25dp"
+                    android:src="@mipmap/artist"
+                    app:border_color="@color/colorAccent"
+                    app:border_width="3dp"/>
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/md_white_1000"
+                    android:text="登录"/>
+                <TextView
+                    android:id="@+id/tv_user_flower"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+
+                    android:layout_margin="3dp"
+                    android:drawableLeft="@drawable/ic_flower_24dp"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bt_sc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="收藏"/>
+
+            <Button
+                android:id="@+id/bt_quit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="注销"/>
+
         </LinearLayout>
 
     </android.support.v4.widget.DrawerLayout>
@@ -58,6 +103,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        android:src="@drawable/ic_add_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

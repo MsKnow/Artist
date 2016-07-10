@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 import com.example.know.adapter.ArtsAdapter;
 import com.example.know.artist.base.RefreshActivity;
-import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.artist.view.CardinView;
 import com.example.know.model.ArtCard;
 import com.example.know.presenter.impl.CardinPresenterImpl;

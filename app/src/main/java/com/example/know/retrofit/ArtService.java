@@ -38,6 +38,15 @@ public interface ArtService {
 
     @Multipart
     @POST("register.php")
-    Observable<Result> Register(@Part("name")String name,@Part("password")String password);
+    Observable<Result> Register(@Part("name")String name,@Part("password")int password);
+
+    @Multipart
+    @POST("login.php")
+    Observable<Result> login(@Part("name")String name,@Part("password")String password);
+
+    @Multipart
+    @POST("avatar.php")
+    Observable<ResponseBody> postAvatar(@Part("file\"; filename=\"文件名.jpg")RequestBody image,
+                                 @Part("userId") int userId);
 
 }
