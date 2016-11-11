@@ -22,7 +22,7 @@ public class ServiceFactory {
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://1.selfie.applinzi.com/")
+                .baseUrl("http://1.artist.applinzi.com/")
         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(OkHttpUtil.client)

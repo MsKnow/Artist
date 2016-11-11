@@ -7,8 +7,10 @@ import com.example.know.model.ArtCard;
 import com.example.know.presenter.CardinPresenter;
 import com.example.know.retrofit.ArtService;
 
+import java.io.IOException;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -29,7 +31,36 @@ public class CardinPresenterImpl implements CardinPresenter{
     @Override
     public void getArts(int selfId) {
         cardinView.showLoading();
-        artService.getArts(233,selfId)
+
+        /*artService.getArtsT(233,selfId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e("oncomplete", "ff");
+                        cardinView.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("onerror",e.toString());
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String body = responseBody.string();
+                            Log.e("atrs----->",body);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });*/
+
+
+        artService.getArts(selfId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<ArtCard>>() {

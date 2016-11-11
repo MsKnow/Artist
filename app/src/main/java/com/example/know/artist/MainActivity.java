@@ -24,7 +24,9 @@ import com.example.know.artist.base.RefreshActivity;
 import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.model.TwoCard;
 import com.example.know.model.User;
+import com.example.know.util.ToastUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +34,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
@@ -47,6 +51,7 @@ public class MainActivity extends RefreshActivity {
     //String secretKey = "f618bb0da5d82c7dd43502c0f9347f1383cfd235";
     List<TwoCard> twoCards;
     TwoCardAdapter adapter;
+    //@Bind(R.id.drawer)View Drawer;
     @Bind(R.id.drawerLayout)DrawerLayout drawerLayout;
     @Bind(R.id.im_avatar)ImageView avatar;
     @Bind(R.id.tv_user_name)TextView myNameText;
@@ -90,9 +95,15 @@ public class MainActivity extends RefreshActivity {
         fab.setOnClickListener(view -> {
             /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();*/
-            Intent intent = new Intent(MainActivity.this, UploadActivity.class);
-            intent.putExtra("selfId", -1);//just selfie
-            startActivity(intent);
+            if (me==null){
+                ToastUtil.tShort("请先登录");
+            }else{
+                Intent intent = new Intent(MainActivity.this, UploadActivity.class);
+                intent.putExtra("selfId", -1);//just selfie
+                intent.putExtra("userId", me.getUserId());
+                startActivity(intent);
+
+            }
 
         });
 
@@ -142,9 +153,16 @@ public class MainActivity extends RefreshActivity {
                 R.string.abc_action_bar_home_description,
                 R.string.abc_action_bar_home_description_format);
         drawerToggle.syncState();
-        drawerLayout.setDrawerListener(drawerToggle);
+        //drawerLayout.setDrawerListener(drawerToggle);
+        drawerLayout.addDrawerListener(drawerToggle);
 
     }
+    @OnClick(R.id.tv_user_name)
+    public void login(){
+        toLogin();
+    }
+
+
     @OnClick(R.id.bt_quit)
     public void logout(){
         myNameText.setText("未登录");
@@ -161,14 +179,19 @@ public class MainActivity extends RefreshActivity {
             Intent intent = new Intent(MainActivity.this, UploadActivity.class);
             intent.putExtra("selfId", 0);//just avatar
             intent.putExtra("userId",me.getUserId());
-            startActivity(intent);
+            startActivityForResult(intent, REQUSETME);
 
         }else{
-            drawerLayout.closeDrawer(Gravity.LEFT);
+            //drawerLayout.closeDrawer(Gravity.LEFT);
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivityForResult(intent, REQUSETME);
         }
 
+    }
+
+    @OnClick(R.id.drawer)
+    public void drawerTest(){
+        Log.e("drawer","drawerOnclick");
     }
 
     @Override
@@ -181,7 +204,58 @@ public class MainActivity extends RefreshActivity {
 
     private void getcards(){
 
-        artService.getTwoCard(233)
+
+        /*artService.getTwoCardT(1)
+                .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
+                .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
+                .subscribe(new Subscriber<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e("getwo", "onCompleted");
+                        setRefresh(false);
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.e("getwo", "onError");
+                        setRefresh(false);
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+
+                        String body = "44" ;
+                        try {
+                            body = responseBody.string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Log.e("------->",body);
+
+                    }
+                });*/
+
+        int id = 0;
+        if (me == null){
+            id = -1;
+        }else {
+            id = me.getUserId();
+        }
+
+        /*artService.getTwoCardT(id)
+                .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
+                .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
+                .subscribe(responseBody -> {
+                    try {
+                        String body = responseBody.string();
+                        Log.e("twoCT","----->"+body);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });*/
+
+        artService.getTwoCard(id)
                 .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
                 .subscribe(new Subscriber<List<TwoCard>>() {
@@ -227,6 +301,7 @@ public class MainActivity extends RefreshActivity {
             Intent intent = new Intent(MainActivity.this,CardinActivity.class);
             //intent.putExtra("selfId",(Serializable)twoCard.arts); 使用数据库做第一次更新
             intent.putExtra("selfId",id);
+            intent.putExtra("userId",me.getUserId());
             startActivity(intent);
         };
     }

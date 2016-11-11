@@ -1,5 +1,6 @@
 package com.example.know.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.litesuits.orm.db.annotation.Column;
 import com.litesuits.orm.db.annotation.PrimaryKey;
 import com.litesuits.orm.db.enums.AssignType;
@@ -21,6 +22,7 @@ public class User implements Serializable{
     @Column("flower")
     private int flower;
     @Column("headUrl")
+    @SerializedName("av")
     private String headUrl;
 
     public int getUserId() {
@@ -56,7 +58,8 @@ public class User implements Serializable{
     }
 
     public String getHeadUrl() {
-        return "http://sinacloud.net/artist/avatar/a"+userId+"_"+headUrl+".png";
+        //return "http://sinacloud.net/artist/avatar/a"+userId+"_"+headUrl+".png";
+        return headUrl;
     }
 
     public void setHeadUrl(String headUrl) {

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.know.artist.base.ToolbarActivity;
+import com.example.know.model.User;
 import com.example.know.retrofit.ServiceFactory;
 import com.example.know.util.ToastUtil;
 
@@ -67,8 +68,8 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        selfId = intent.getIntExtra("selfId",-1);
-        userId = intent.getIntExtra("userId",0);
+        selfId = intent.getIntExtra("selfId",-1);/////////
+        userId = intent.getIntExtra("userId",-1);
 
         buttonImgTake.setOnClickListener(this);
         buttonImgPick.setOnClickListener(this);
@@ -137,22 +138,30 @@ public class UploadActivity extends ToolbarActivity implements View.OnClickListe
 
                 if (selfId==0){
                     Log.e("上传",userId+" avatar");
+
                     ServiceFactory.getService().postAvatar(requestBody,userId)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(body -> {
+                            .subscribe(result -> {
 
-                                try {
-                                    String html = body.string();
-                                    Log.e("html", html);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                User me = result.getUser();
+                                String mes = me.toString();
+                                Log.e("html", mes);
+                                if (result.getResultCode()>0){
+                                    Intent intent2 = new Intent();
+                                    intent2.putExtra("me",me);
+                                    setResult(RESULT_OK, intent2);
+                                    finish();
                                 }
+                                ToastUtil.tShort(result.getResultDes());
+
                                 buttonImgUp.setEnabled(true);
 
                             }, throwable -> {
                                 buttonImgUp.setEnabled(true);
+                                buttonImgUp.setText("上传");
                                 throwable.printStackTrace();
+                                ToastUtil.tShort("错误，请重试");
                             });
                 }else {Log.e("上传",userId+" selfie");
                     Call<ResponseBody> call = ServiceFactory.getService().postImage(requestBody,userId,selfId);

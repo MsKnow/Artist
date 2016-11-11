@@ -7,25 +7,38 @@ import java.util.List;
  */
 public class TwoCard {
 
-    public SelfieCard selfie;
-    public List<ArtCard> arts;
-    //ArtCard artCard;
 
+
+    public String userName;
+    public String av;
+    public SelfieCard selfie;
+    public ArtCard art;
+    //ArtCard artCard;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getAv() {
+        return av;
+    }
+
+    public void setAv(String av) {
+        this.av = av;
+    }
     public void setSelfie(SelfieCard selfie) {
         this.selfie = selfie;
     }
 
     @Override
     public String toString() {
-        if(arts != null){
-            String str = "";
-            for (int i=0;i<arts.size();i++){
-                str += "\n"+arts.get(i).toString();
-            }
-            return selfie.toString()+" "+str;
-        }else{
-            return selfie.toString()+" art is null";
+        String str = selfie.toString();
+        if (art!=null){
+            str += "-----" + art.toString();
         }
-
+        return str;
     }
 }

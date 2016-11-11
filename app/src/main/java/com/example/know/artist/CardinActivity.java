@@ -24,7 +24,7 @@ public class CardinActivity extends RefreshActivity implements CardinView{
 
     private CardinPresenterImpl presenter;
 
-    int selfId;
+    int selfId,userId;
 
     private List<ArtCard> arts;
     private ArtsAdapter artsAdapter;
@@ -35,16 +35,7 @@ public class CardinActivity extends RefreshActivity implements CardinView{
         return R.layout.activity_cardin;
     }
 
-    private void initList(){
-        arts = new ArrayList<>();
-        artsAdapter = new ArtsAdapter(arts,this);
 
-        final StaggeredGridLayoutManager layoutManager =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        artList.setLayoutManager(layoutManager);
-
-        artList.setAdapter(artsAdapter);
-    }
 
     @Override
     protected void refresh() {
@@ -54,14 +45,17 @@ public class CardinActivity extends RefreshActivity implements CardinView{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
+
 
         presenter = new CardinPresenterImpl(this,artService);
 
         initList();
 
         Intent intentF = getIntent();
-        selfId = intentF.getIntExtra("selfId",0);
+        selfId = intentF.getIntExtra("selfId",-1);
+
+        userId = intentF.getIntExtra("userId",-1);
+
         presenter.getArts(selfId);
 
 
@@ -78,6 +72,7 @@ public class CardinActivity extends RefreshActivity implements CardinView{
 
         Intent intent = new Intent(CardinActivity.this,UploadActivity.class);
         intent.putExtra("selfId", selfId);
+        intent.putExtra("userId", userId);
         startActivity(intent);
 
         return super.onOptionsItemSelected(item);
@@ -99,5 +94,27 @@ public class CardinActivity extends RefreshActivity implements CardinView{
         arts.addAll(artss);
         artsAdapter.notifyDataSetChanged();
         Log.e("refresh",""+arts.get(0).getUserId());
+    }
+
+    private void initList(){
+        arts = new ArrayList<>();
+        artsAdapter = new ArtsAdapter(arts,this);
+
+        final StaggeredGridLayoutManager layoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        artList.setLayoutManager(layoutManager);
+
+        artList.setAdapter(artsAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+
+        if(presenter == null){
+            presenter = new CardinPresenterImpl(this,artService);
+        }
+        presenter.getArts(selfId);
+
+        super.onResume();
     }
 }

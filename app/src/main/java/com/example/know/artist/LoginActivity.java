@@ -12,6 +12,8 @@ import com.example.know.retrofit.Result;
 import com.example.know.retrofit.ServiceFactory;
 import com.example.know.util.ToastUtil;
 
+import java.io.IOException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -63,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setEnabled(false);
         loginButton.setText("登录中。。。");
+
 
         ServiceFactory.getService().login(name,password)
                 .subscribeOn(Schedulers.io())

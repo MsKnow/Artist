@@ -34,11 +34,17 @@ public interface ArtService {
     Observable<List<TwoCard>> getTwoCard(@Query("userId")int userId);
 
     @GET("geTwoCard.php")
-    Observable<List<ArtCard>> getArts(@Query("userId")int userId,@Query(("selfId")) int selfId);
+    Observable<ResponseBody> getTwoCardT(@Query("userId")int userId);
+
+    @GET("getArts.php")
+    Observable<List<ArtCard>> getArts(@Query(("selfId")) int selfId);
 
     @Multipart
     @POST("register.php")
-    Observable<Result> Register(@Part("name")String name,@Part("password")int password);
+    Observable<Result> Register(@Part("name")String name,@Part("password")String password);
+
+    @GET("getArts.php")
+    Observable<ResponseBody> getArtsT(@Query("userId")int userId,@Query(("selfId")) int selfId);
 
     @Multipart
     @POST("login.php")
@@ -46,7 +52,12 @@ public interface ArtService {
 
     @Multipart
     @POST("avatar.php")
-    Observable<ResponseBody> postAvatar(@Part("file\"; filename=\"文件名.jpg")RequestBody image,
+    Observable<Result> postAvatar(@Part("file\"; filename=\"文件名.jpg")RequestBody image,
                                  @Part("userId") int userId);
+
+    @Multipart
+    @POST("avatar.php")
+    Observable<ResponseBody> postAvatarT(@Part("file\"; filename=\"文件名.jpg")RequestBody image,
+                                  @Part("userId") int userId);
 
 }

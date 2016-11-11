@@ -53,21 +53,25 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
 
         holder.twoCard = card;
 
+        holder.tv_name.setText(card.getUserName());
         holder.tv_zan.setText(card.selfie.getUserId() + "");
         String selfTime = DateUtil.toDate(card.selfie.getUploadTime());
         holder.tv_uptime.setText(selfTime);
         //holder.tv_uptime.setText(card.selfie.getUploadTime().toString()+"");
-
         Glide.with(context)
                 .load(card.selfie.getImUrl())
                 .centerCrop()
                 .into(holder.im_selfie);
-        if(card.arts!=null){
+        if(card.art!=null){
             Glide.with(context)
-                    .load(card.arts.get(card.arts.size()-1).getImUrl())
+                    .load(card.art.getImUrl())
                     .centerCrop()
                     .into(holder.im_art);
         }
+        Glide.with(context)
+                .load(card.getAv())
+                .centerCrop()
+                .into(holder.im_avatar);
 
     }
 
@@ -77,6 +81,9 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        @Bind(R.id.im_head_card) ImageView im_avatar;
+        @Bind(R.id.tv_name_card) TextView tv_name;
 
         @Bind(R.id.im_selfie)ImageView im_selfie ;
         @Bind(R.id.im_art)ImageView im_art;

@@ -61,8 +61,24 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setEnabled(false);
         registerButton.setText("注册中。。");
 
+        /*ServiceFactory.getService()
+                .RegisterTest(name,password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBody -> {
+                    String body = "";
+                    try {
+                        body = responseBody.string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Log.e("------->",body);
+                    registerButton.setEnabled(true);
+                    registerButton.setText("注册");
+                });*/
+
         ServiceFactory.getService()
-                .Register(name, 1)
+                .Register(name, password)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -77,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                         finish();
                     }
                     ToastUtil.tShort(result.getResultDes());
-                    Log.e("result",result.toString());
+                    Log.e("result--------------->",result.toString());
                 }, throwable -> {
 
                     registerButton.setEnabled(true);
