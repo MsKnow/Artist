@@ -5,27 +5,40 @@
 
     <include layout="@layout/view_toolbar"/>
 
-    <Button
-        android:id="@+id/bt_img_take"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="选择图片相机"/>
+        android:padding="10dp">
 
-    <Button
-        android:id="@+id/bt_img_pick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="选择图片相册"/>
+        <Button
+            android:id="@+id/bt_img_take"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="相机"/>
+
+        <Button
+            android:id="@+id/bt_img_pick"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="相册"/>
+
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/im_upload"
+        android:layout_gravity="center"
         android:layout_width="200dp"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        android:background="@color/md_yellow_100"/>
 
     <Button
         android:id="@+id/bt_img_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:enabled="false"
         android:text="upload"/>
 

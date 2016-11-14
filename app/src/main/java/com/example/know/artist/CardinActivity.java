@@ -9,16 +9,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.know.adapter.ArtsAdapter;
+import com.example.know.adapter.OnArtClickListener;
 import com.example.know.artist.base.RefreshActivity;
 import com.example.know.artist.view.CardinView;
 import com.example.know.model.ArtCard;
 import com.example.know.presenter.impl.CardinPresenterImpl;
+import com.example.know.retrofit.Result;
+import com.example.know.retrofit.ServiceFactory;
+import com.example.know.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class CardinActivity extends RefreshActivity implements CardinView{
 
@@ -63,17 +70,24 @@ public class CardinActivity extends RefreshActivity implements CardinView{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_cardin,menu);
+        getMenuInflater().inflate(R.menu.menu_cardin, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        Intent intent = new Intent(CardinActivity.this,UploadActivity.class);
-        intent.putExtra("selfId", selfId);
-        intent.putExtra("userId", userId);
-        startActivity(intent);
+        if (userId == -10){
+            ToastUtil.tShort("请先登录");
+
+        }else {
+            Intent intent = new Intent(CardinActivity.this,UploadActivity.class);
+            intent.putExtra("selfId", selfId);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        }
+
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -93,7 +107,7 @@ public class CardinActivity extends RefreshActivity implements CardinView{
         arts.clear();
         arts.addAll(artss);
         artsAdapter.notifyDataSetChanged();
-        Log.e("refresh",""+arts.get(0).getUserId());
+        Log.e("refresh", "" + arts.get(0).getUserId());
     }
 
     private void initList(){
@@ -103,8 +117,46 @@ public class CardinActivity extends RefreshActivity implements CardinView{
         final StaggeredGridLayoutManager layoutManager =
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         artList.setLayoutManager(layoutManager);
-
+        artsAdapter.setOnClickListener(getOnArtClickListener());
         artList.setAdapter(artsAdapter);
+    }
+
+    private OnArtClickListener getOnArtClickListener(){
+        return (loveImg, artCard) -> {
+
+            if (userId == -10){
+                ToastUtil.tShort("请先登录");
+            }else if(userId == -1){
+                if (MainActivity.me!=null){
+                    love(MainActivity.me.getUserId(),artCard.getId(),artCard.getUserId());
+                }else
+                    ToastUtil.tShort("请先登录");
+            }else {
+                love(userId,artCard.getId(),artCard.getUserId());
+            }
+
+        };
+    }
+
+    private void love(int userId,int artId,int artistId){
+
+        ServiceFactory.getService().love(userId,artId,artistId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    Log.e("love", "-------" + result.toString());
+                    if (result.getResultCode()>0){
+                        ToastUtil.tShort(result.getResultDes());
+
+                        presenter.getArts(selfId);
+
+                    }else if (result.getResultCode()==-2){
+                        ToastUtil.tShort("+1s");
+                    }
+                },throwable -> {
+                    throwable.printStackTrace();
+                    ToastUtil.tShort("网络错误，请重试");
+                });
     }
 
     @Override

@@ -43,8 +43,12 @@ public interface ArtService {
     @POST("register.php")
     Observable<Result> Register(@Part("name")String name,@Part("password")String password);
 
-    @GET("getArts.php")
-    Observable<ResponseBody> getArtsT(@Query("userId")int userId,@Query(("selfId")) int selfId);
+    @GET("visit.php")
+    Observable<Result> visit(@Query("userId")int userId,@Query("selfId") int selfId);
+
+    @GET("love.php")
+    Observable<Result> love(@Query("userId")int userId,@Query("artId") int artId
+            ,@Query("artistId") int artistId);
 
     @Multipart
     @POST("login.php")
@@ -59,5 +63,7 @@ public interface ArtService {
     @POST("avatar.php")
     Observable<ResponseBody> postAvatarT(@Part("file\"; filename=\"文件名.jpg")RequestBody image,
                                   @Part("userId") int userId);
+
+
 
 }

@@ -54,7 +54,8 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
         holder.twoCard = card;
 
         holder.tv_name.setText(card.getUserName());
-        holder.tv_zan.setText(card.selfie.getUserId() + "");
+        if (card.art != null)
+        holder.tv_zan.setText(card.art.getFlower() + "");
         String selfTime = DateUtil.toDate(card.selfie.getUploadTime());
         holder.tv_uptime.setText(selfTime);
         //holder.tv_uptime.setText(card.selfie.getUploadTime().toString()+"");
@@ -62,6 +63,7 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
                 .load(card.selfie.getImUrl())
                 .centerCrop()
                 .into(holder.im_selfie);
+        holder.im_art.setImageResource(R.mipmap.ic_launcher);
         if(card.art!=null){
             Glide.with(context)
                     .load(card.art.getImUrl())
@@ -88,6 +90,7 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
         @Bind(R.id.im_selfie)ImageView im_selfie ;
         @Bind(R.id.im_art)ImageView im_art;
         @Bind(R.id.tv_zan)TextView tv_zan;
+        @Bind(R.id.im_love_two)ImageView im_love;
         @Bind(R.id.tv_uptime)TextView tv_uptime;
         View cardView;
         TwoCard twoCard;
@@ -99,12 +102,13 @@ public class TwoCardAdapter extends RecyclerView.Adapter<TwoCardAdapter.ViewHold
 
             im_selfie.setOnClickListener(this);
             im_art.setOnClickListener(this);
+            im_love.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View view) {
-            listener.onCardClick(view,im_selfie,im_art,twoCard);
+            listener.onCardClick(view,im_selfie,im_art,im_love,twoCard);
         }
     }
 

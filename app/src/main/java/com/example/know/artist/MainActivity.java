@@ -1,5 +1,6 @@
 package com.example.know.artist;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,6 +26,8 @@ import com.example.know.artist.base.RefreshActivity;
 import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.model.TwoCard;
 import com.example.know.model.User;
+import com.example.know.retrofit.Result;
+import com.example.know.retrofit.ServiceFactory;
 import com.example.know.util.ToastUtil;
 
 import java.io.IOException;
@@ -35,6 +39,7 @@ import butterknife.ButterKnife;
 
 import butterknife.OnClick;
 import okhttp3.ResponseBody;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -58,7 +63,7 @@ public class MainActivity extends RefreshActivity {
     @Bind(R.id.tv_user_flower)TextView myFlowers;
     ActionBarDrawerToggle drawerToggle;
     boolean online = false;
-    User me;
+    public static User me;
 
     public void checkLocal(){
 
@@ -85,7 +90,7 @@ public class MainActivity extends RefreshActivity {
         if (users.size()>0){
             me = users.get(0);
             online = true;
-            refreshMe(me);
+            refreshMeFS(me);
         }
 
         intiList();
@@ -96,7 +101,7 @@ public class MainActivity extends RefreshActivity {
             /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();*/
             if (me==null){
-                ToastUtil.tShort("请先登录");
+                ToastUtil.tShort("请先登录");//TODO 弹出抽屉
             }else{
                 Intent intent = new Intent(MainActivity.this, UploadActivity.class);
                 intent.putExtra("selfId", -1);//just selfie
@@ -126,10 +131,32 @@ public class MainActivity extends RefreshActivity {
             refreshMe(mee);
         }
     }
+    private void refreshMeFS(User me){
+
+        ServiceFactory.getService().login(me.getName(),me.getPassword())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    User meeee = result.getUser();
+                    refreshMe(meeee);
+                    int flowerAdd = meeee.getFlower() - me.getFlower();
+
+                    if (flowerAdd>0){
+                        String reason = "";
+                        if (flowerAdd==2){
+                            reason = "收到赞 ";
+                        }
+                        ToastUtil.tShort(reason+"✿ + " + flowerAdd+" !");
+                    }
+
+                    App.mDb.save(meeee);
+                });
+
+    }
     private void refreshMe(User me){
         myNameText.setText(me.getName());
         Glide.with(MainActivity.this).load(me.getHeadUrl()).into(avatar);
-        Log.e("ava---->",me.getHeadUrl());
+        Log.e("ava---->", me.getHeadUrl());
         myFlowers.setText("" + me.getFlower());
     }
 
@@ -169,6 +196,7 @@ public class MainActivity extends RefreshActivity {
         avatar.setImageResource(R.mipmap.artist);
         App.mDb.delete(User.class);
         online = false;
+        me = null;
 
     }
     @OnClick(R.id.im_avatar)
@@ -191,14 +219,21 @@ public class MainActivity extends RefreshActivity {
 
     @OnClick(R.id.drawer)
     public void drawerTest(){
-        Log.e("drawer","drawerOnclick");
+        Log.e("drawer", "drawerOnclick");
     }
 
     @Override
     protected void onResume() {
         //Glide.with(this).load("http://imgx.sinacloud.net/artist/r_max,e_oil_paint/selfie/1.jpg").into(imagePost);
         getcards();
-
+        List<User> users = App.mDb.query(User.class);
+        if (users.size()>0){
+            me = users.get(0);
+            online = true;
+        }
+        if (me!=null){
+            refreshMeFS(me);
+        }
         super.onResume();
     }
 
@@ -289,20 +324,97 @@ public class MainActivity extends RefreshActivity {
     }
 
     private OnCardClickListener getOnCardClickListener(){
-        return (v,selfCard,artCard,twoCard)->{
+        return (v,selfCard,artCard,loveImg,twoCard)->{
             if(twoCard == null) return;
+
             int id = twoCard.selfie.getId();
             if(v == selfCard){
-                Log.e("selfClick"," id: "+id);
+                Log.e("selfClick", " id: " + id);
+                if (me == null){
+                    ToastUtil.tShort("请先登录。。");
+                    return;
+                }
+                if (twoCard.selfie.isBlur()){
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("✿ - 5 ?");
+                    builder.setTitle("撸多了");
+                    builder.setPositiveButton("瞅瞅", (dialog, i) -> {
+                        dialog.dismiss();
+                        if (me == null ){
+                            ToastUtil.tShort("请先登录。。。");
+                        }else {
+                            ServiceFactory.getService().visit(me.getUserId(),id)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(result -> {
+                                        int code = result.getResultCode();
+                                        if (code > -1) {
+                                            ToastUtil.tShort(result.getResultDes());
+                                            if (code == 1) {
+                                                refreshMeFS(me);
+                                                getcards();
+                                            }
+                                        }
+
+                                    }, throwable -> {
+                                        throwable.printStackTrace();
+                                        ToastUtil.tShort("网络错误。。。");
+                                    });
+                        }
+
+                    }).setNegativeButton("取消",((dialog, i) -> {dialog.dismiss();}));
+                    builder.create().show();
+                }
+
+
             }
             if(v == artCard){
                 Log.e("artClick", " id: " + id);
+                Intent intent = new Intent(MainActivity.this,CardinActivity.class);
+                //intent.putExtra("selfId",(Serializable)twoCard.arts); 使用数据库做第一次更新
+                intent.putExtra("selfId", id);
+                if (me == null){
+                    intent.putExtra("userId",-10);
+                }else {
+                    intent.putExtra("userId", me.getUserId());
+                }
+
+                startActivity(intent);
             }
-            Intent intent = new Intent(MainActivity.this,CardinActivity.class);
-            //intent.putExtra("selfId",(Serializable)twoCard.arts); 使用数据库做第一次更新
-            intent.putExtra("selfId",id);
-            intent.putExtra("userId",me.getUserId());
-            startActivity(intent);
+
+            if (v == loveImg){
+                if (me == null){
+                    ToastUtil.tShort("请先登录。。");
+                    return;
+                }
+                if (twoCard.art==null){
+                    ToastUtil.tShort("请先登");
+                    return;
+                }
+                ServiceFactory.getService().love(me.getUserId(),twoCard.art.getId(),twoCard.art.getUserId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Result>() {
+                    @Override
+                    public void call(Result result) {
+                        //Log.e("love", "-------" + result.toString());
+                        if (result.getResultCode()>0){
+                            ToastUtil.tShort(result.getResultDes());
+
+                            refreshMeFS(me);
+                            getcards();
+
+                        }else if (result.getResultCode()==-2){
+                            ToastUtil.tShort("+1s");
+                        }
+                    }
+                }, throwable -> {
+                    throwable.printStackTrace();
+
+                });
+            }
+
         };
     }
 

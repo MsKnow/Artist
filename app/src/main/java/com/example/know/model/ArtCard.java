@@ -5,7 +5,28 @@ package com.example.know.model;
  */
 public class ArtCard extends Card {
 
+    public String userName;
+    public String av;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getAv() {
+        return av;
+    }
+
+    public void setAv(String av) {
+        this.av = av;
+    }
+
+    private int selfId;
     private int flower;
+
 
     public int getSelfId() {
         return selfId;
@@ -15,7 +36,7 @@ public class ArtCard extends Card {
         this.selfId = selfId;
     }
 
-    private int selfId;
+
 
     public int getFlower() {
         return flower;
