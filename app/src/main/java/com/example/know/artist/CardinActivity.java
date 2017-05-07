@@ -14,7 +14,6 @@ import com.example.know.artist.base.RefreshActivity;
 import com.example.know.artist.view.CardinView;
 import com.example.know.model.ArtCard;
 import com.example.know.presenter.impl.CardinPresenterImpl;
-import com.example.know.retrofit.Result;
 import com.example.know.retrofit.ServiceFactory;
 import com.example.know.util.ToastUtil;
 
@@ -22,9 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class CardinActivity extends RefreshActivity implements CardinView{
@@ -110,6 +107,11 @@ public class CardinActivity extends RefreshActivity implements CardinView{
         Log.e("refresh", "" + arts.get(0).getUserId());
     }
 
+    @Override
+    public void changeLove(int artId, int flower) {
+
+    }
+
     private void initList(){
         arts = new ArrayList<>();
         artsAdapter = new ArtsAdapter(arts,this);
@@ -122,7 +124,7 @@ public class CardinActivity extends RefreshActivity implements CardinView{
     }
 
     private OnArtClickListener getOnArtClickListener(){
-        return (loveImg, artCard) -> {
+        return (v,art,loveImg, artCard) -> {
 
             if (userId == -10){
                 ToastUtil.tShort("请先登录");
@@ -130,7 +132,7 @@ public class CardinActivity extends RefreshActivity implements CardinView{
                 if (MainActivity.me!=null){
                     love(MainActivity.me.getUserId(),artCard.getId(),artCard.getUserId());
                 }else
-                    ToastUtil.tShort("请先登录");
+                    ToastUtil.tShort("请先登录..");
             }else {
                 love(userId,artCard.getId(),artCard.getUserId());
             }

@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import com.example.know.artist.R;
 import com.example.know.retrofit.ArtService;
 import com.example.know.retrofit.ServiceFactory;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by know on 2016/3/6.
@@ -28,5 +29,11 @@ public abstract class ToolbarActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+    }
+
+    @Override
+    protected void onResume() {
+        MobclickAgent.onResume(this);
+        super.onResume();
     }
 }

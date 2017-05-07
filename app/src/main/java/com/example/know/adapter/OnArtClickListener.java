@@ -9,6 +9,6 @@ import com.example.know.model.ArtCard;
  */
 public interface OnArtClickListener {
 
-    void onArtClickListener(View loveImg,ArtCard artCard);
+    void onArtClickListener(View v,View artImg,View loveImg,ArtCard artCard);
 
 }

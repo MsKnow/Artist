@@ -3,6 +3,7 @@ package com.example.know.artist;
 import android.app.Application;
 import android.content.Context;
 
+import com.blankj.ALog;
 import com.example.know.util.ToastUtil;
 import com.litesuits.orm.LiteOrm;
 
@@ -19,6 +20,9 @@ public class App extends Application {
         super.onCreate();
 
         mContext = this;
+
+
+
         ToastUtil.register(this);
 
         mDb = LiteOrm.newSingleInstance(mContext,"art.db");

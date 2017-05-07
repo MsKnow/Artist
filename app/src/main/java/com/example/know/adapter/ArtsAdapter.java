@@ -84,7 +84,7 @@ public class ArtsAdapter extends RecyclerView.Adapter<ArtsAdapter.ViewHolder>{
 
         @Override
         public void onClick(View view) {
-            listener.onArtClickListener(artView,artCard);
+            listener.onArtClickListener(view,im_art,im_love,artCard);
         }
     }
 

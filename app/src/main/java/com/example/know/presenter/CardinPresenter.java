@@ -7,4 +7,6 @@ public interface CardinPresenter {
 
     void getArts(int selfId);
 
+    void love(int userId,int artId,int artistId);
+
 }

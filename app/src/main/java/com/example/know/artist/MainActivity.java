@@ -1,19 +1,14 @@
 package com.example.know.artist;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -23,26 +18,19 @@ import com.bumptech.glide.Glide;
 import com.example.know.adapter.OnCardClickListener;
 import com.example.know.adapter.TwoCardAdapter;
 import com.example.know.artist.base.RefreshActivity;
-import com.example.know.artist.base.ToolbarActivity;
 import com.example.know.model.TwoCard;
 import com.example.know.model.User;
-import com.example.know.retrofit.Result;
 import com.example.know.retrofit.ServiceFactory;
 import com.example.know.util.ToastUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
 import butterknife.OnClick;
-import okhttp3.ResponseBody;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
@@ -371,7 +359,8 @@ public class MainActivity extends RefreshActivity {
             }
             if(v == artCard){
                 Log.e("artClick", " id: " + id);
-                Intent intent = new Intent(MainActivity.this,CardinActivity.class);
+                Intent //intent = new Intent(MainActivity.this,CardinActivity.class);
+                intent = new Intent(MainActivity.this,ArtsActivity.class);
                 //intent.putExtra("selfId",(Serializable)twoCard.arts); 使用数据库做第一次更新
                 intent.putExtra("selfId", id);
                 if (me == null){
@@ -379,6 +368,9 @@ public class MainActivity extends RefreshActivity {
                 }else {
                     intent.putExtra("userId", me.getUserId());
                 }
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("twoCard", twoCard);
+                intent.putExtra("bundle",bundle);
 
                 startActivity(intent);
             }
@@ -389,25 +381,22 @@ public class MainActivity extends RefreshActivity {
                     return;
                 }
                 if (twoCard.art==null){
-                    ToastUtil.tShort("请先登");
+                    ToastUtil.tShort("大爷 别急嘛");
                     return;
                 }
                 ServiceFactory.getService().love(me.getUserId(),twoCard.art.getId(),twoCard.art.getUserId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Result>() {
-                    @Override
-                    public void call(Result result) {
-                        //Log.e("love", "-------" + result.toString());
-                        if (result.getResultCode()>0){
-                            ToastUtil.tShort(result.getResultDes());
+                .subscribe(result -> {
+                    //Log.e("love", "-------" + result.toString());
+                    if (result.getResultCode()>0){
+                        ToastUtil.tShort(result.getResultDes());
 
-                            refreshMeFS(me);
-                            getcards();
+                        refreshMeFS(me);
+                        getcards();
 
-                        }else if (result.getResultCode()==-2){
-                            ToastUtil.tShort("+1s");
-                        }
+                    }else if (result.getResultCode()==-2){
+                        ToastUtil.tShort("+1s");
                     }
                 }, throwable -> {
                     throwable.printStackTrace();

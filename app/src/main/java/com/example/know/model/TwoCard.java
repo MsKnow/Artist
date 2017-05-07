@@ -1,11 +1,12 @@
 package com.example.know.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by know on 2016/2/21.
  */
-public class TwoCard {
+public class TwoCard implements Serializable{
 
 
 

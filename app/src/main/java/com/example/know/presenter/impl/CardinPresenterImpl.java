@@ -6,6 +6,7 @@ import com.example.know.artist.view.CardinView;
 import com.example.know.model.ArtCard;
 import com.example.know.presenter.CardinPresenter;
 import com.example.know.retrofit.ArtService;
+import com.example.know.retrofit.Result;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -20,8 +22,8 @@ import rx.schedulers.Schedulers;
  */
 public class CardinPresenterImpl implements CardinPresenter{
 
-    CardinView cardinView;
-    ArtService artService;
+    private CardinView cardinView;
+    private ArtService artService;
 
     public CardinPresenterImpl(CardinView cardinView, ArtService artService) {
         this.cardinView = cardinView;
@@ -77,9 +79,35 @@ public class CardinPresenterImpl implements CardinPresenter{
 
                     @Override
                     public void onNext(List<ArtCard> artCards) {
-                        Log.e("atrs"," "+artCards.size()+artCards.get(0).getImUrl());
+                        for (ArtCard artcard : artCards) {
+                            Log.e("atrs---"," "+artCards.size()+artcard.getImUrl());
+                        }
+
                         cardinView.refreshArts(artCards);
                     }
+                });
+    }
+
+    @Override
+    public void love(int userId, int artId, int artistId) {
+
+
+        artService.love(userId,artId,artistId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    Log.e("love","result----->"+result.toString());
+                    if (result.getResultCode()>0){
+                        Log.e("love","+1--->"+artId);
+                        cardinView.changeLove(artId,1);
+                    }else {
+                        Log.e("love","+0--->"+artId);
+                        //cardinView.changeLove(artId,-1);
+                    }
+
+                }, throwable -> {
+                    Log.e("love","error--->"+artId);
+                    throwable.printStackTrace();
                 });
     }
 }

@@ -17,6 +17,8 @@ public class ServiceFactory {
 
     public static  ArtService getService(){
 
+        if(service != null)return service;
+
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();

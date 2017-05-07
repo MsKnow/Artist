@@ -15,4 +15,6 @@ public interface CardinView {
 
     void refreshArts(List<ArtCard> arts);
 
+    void changeLove(int artId,int flower);
+
 }

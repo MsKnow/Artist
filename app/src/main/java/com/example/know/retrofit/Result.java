@@ -33,6 +33,6 @@ public class Result {
                 "resultCode=" + resultCode +
                 ", resultDes='" + resultDes + '\'' +
                 ", error='" + error + '\'' +
-                '}';
+                '}'+"user--->";//+getUser().toString();
     }
 }
