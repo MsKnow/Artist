@@ -25,7 +25,6 @@ import java.util.List;
 
 public class ArtPagerAdapter extends PagerAdapter {
 
-
     private List<CardView> cardviews;
     private List<ArtCard> artCards;
     private float mBaseElevation;
